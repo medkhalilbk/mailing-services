@@ -1,9 +1,12 @@
 import Image from 'next/image'
 import styles from './page.module.css'
-
-export default function Home() {
+import AppBar from './AppBar'
+export default function Home({session}) {
+  
   return (
     <main className={styles.main}>
+
+    <AppBar/>
       <div className={styles.description}>
         <p>
           Get started by editing&nbsp;
