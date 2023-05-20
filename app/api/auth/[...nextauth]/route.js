@@ -17,7 +17,7 @@ const handler = NextAuth({
                 })
             })
             const user = await res.json()
-            console.log(user)
+
             if(user){
                 return user
             } else {
@@ -26,7 +26,21 @@ const handler = NextAuth({
             
         }
     })
- ]
-})
+ ],
+ callbacks: {
+   async jwt({ token, user }) {
+     return { ...token, ...user };
+   },
+   async session({ session, token, user }) {
+     session.user = token
+     return session;
+   },
+ },
+ pages:{
+    signIn:"/login" , 
+    error:'/login?error=cred'  , 
+    
+ }
+}); 
 
 export { handler as GET, handler as POST }
