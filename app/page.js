@@ -1,8 +1,21 @@
+"use client"
 import Image from 'next/image'
 import styles from './page.module.css'
 import AppBar from './AppBar'
-export default function Home({session}) {
-  
+import { useEffect } from 'react'
+import { useSession } from "next-auth/react" 
+import { useRouter } from 'next/navigation'
+
+export default function Home() {
+  const router = useRouter()
+  const { data: session, status } = useSession()
+ useEffect(() => {
+ 
+  if (session?.user.user === "admin" && (typeof window !== "undefined")) {
+    router.push('/admin')
+  }
+ }, [status])
+ 
   return (
     <main className={styles.main}>
 

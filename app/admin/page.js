@@ -21,6 +21,7 @@ import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import costumToast from '../components/toast';
+import StepperCompoment from './stepper';
 export default function SimpleCard() {
   const searchParams = useSearchParams();
   const [User, setUser] = useState("")
@@ -29,7 +30,9 @@ export default function SimpleCard() {
   const Toast = useToast()
   const handleChangeUser = (event) => setUser(event.target.value)
   const handleChangePass = (event) => setPassword(event.target.value)
+  const [Index, setIndex] = useState(0)
   let error = searchParams.get('error')
+  const toast = useToast()
   useEffect(()=>{
   console.log(error)
   if(error){ 
@@ -39,7 +42,8 @@ export default function SimpleCard() {
       isClosable:true ,
     })
   }
-},[error]);
+  console.log(Index)
+},[error,Index]);
   
   return (
  <React.StrictMode> <Flex
@@ -49,41 +53,35 @@ export default function SimpleCard() {
  bg={useColorModeValue('gray.50', 'gray.800')}>
  <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
    <Stack align={'center'}>
-     <Heading fontSize={'4xl'}>AWS Mailer 📧 </Heading>
- 
+     <Heading fontSize={'4xl'}></Heading>
+    <StepperCompoment setIndex={setIndex} />
    </Stack>
-   <Box
+   <Box 
      rounded={'lg'}
      bg={useColorModeValue('white', 'gray.700')}
      boxShadow={'lg'}
      p={8}>
      <Stack spacing={4}>
        <FormControl id="email">
-         <FormLabel>Username</FormLabel>
-         <Input  value={User}  onChange={handleChangeUser} type="email" />
+         <FormLabel>Mailist Name</FormLabel>
+         <Input  value={User}  onChange={handleChangeUser} type="text" />
        </FormControl>
        <FormControl id="password">
-         <FormLabel>Password</FormLabel>
-         <Input type="password" value={Password} onChange={handleChangePass} />
+         <FormLabel>Added by :</FormLabel>
+         <Input type="text" disabled value={'admin'} onChange={handleChangePass} />
        </FormControl>
        <Stack spacing={10}>
 
          <Button
            bg={'blue.400'}
            color={'white'}
-           onClick={() => {
-             signIn('credentials',{username:User,password:Password} , {
-              callbackUrl: `${window.location.origin}/admin`,
-             }).then((res) => {
-               console.log(res)
-             }).catch((err) => {
-               console.log(err)
-             })
+           onClick={async () => { 
+            toast({status:'success','title':"name saved", isClosable:true})
            }}
            _hover={{
              bg: 'blue.500',
            }}>
-          Login
+          Next
          </Button>
        </Stack>
      </Stack>

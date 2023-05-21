@@ -35,12 +35,16 @@ const handler = NextAuth({
      session.user = token
      return session;
    },
+   async redirect({ url, baseUrl }) {
+    return baseUrl
+  },
  },
  pages:{
     signIn:"/login" , 
     error:'/login?error=cred'  , 
     
- }
+ } 
+
 }); 
 
 export { handler as GET, handler as POST }
