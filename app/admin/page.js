@@ -15,13 +15,14 @@ import {
   useToast, 
 } from '@chakra-ui/react';
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import costumToast from '../components/toast';
 import StepperCompoment from './stepper';
+import { createMailist } from './services';
 export default function SimpleCard() {
   const searchParams = useSearchParams();
   const [User, setUser] = useState("")
@@ -30,6 +31,8 @@ export default function SimpleCard() {
   const Toast = useToast()
   const handleChangeUser = (event) => setUser(event.target.value)
   const handleChangePass = (event) => setPassword(event.target.value)
+  const [step, setStep] = useState(1)
+  let session = useSession()
   const [Index, setIndex] = useState(0)
   let error = searchParams.get('error')
   const toast = useToast()
@@ -43,7 +46,7 @@ export default function SimpleCard() {
     })
   }
   console.log(Index)
-},[error,Index]);
+},[error,Index,step]);
   
   return (
  <React.StrictMode> <Flex
@@ -51,11 +54,13 @@ export default function SimpleCard() {
  align={'center'}
  justify={'center'}
  bg={useColorModeValue('gray.50', 'gray.800')}>
+  
  <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
    <Stack align={'center'}>
      <Heading fontSize={'4xl'}></Heading>
-    <StepperCompoment setIndex={setIndex} />
+    <StepperCompoment step={step} setIndex={setIndex} />
    </Stack>
+   {/* this is the naming box  */}
    <Box 
      rounded={'lg'}
      bg={useColorModeValue('white', 'gray.700')}
@@ -75,9 +80,16 @@ export default function SimpleCard() {
          <Button
            bg={'blue.400'}
            color={'white'}
-           onClick={async () => { 
-            toast({status:'success','title':"name saved", isClosable:true})
-           }}
+           onClick={  () => { 
+            let token = (session.data.user.token)
+              
+         createMailist({name:'test',userId:'e',token:token}).then((res) => {
+        if(res.data.mailistId){
+          Toast({status:'success',title:"mailist id #" + res.data.mailistId._id})
+          setStep(2)
+        }
+         }).catch(err => console.log(err))
+        }}
            _hover={{
              bg: 'blue.500',
            }}>

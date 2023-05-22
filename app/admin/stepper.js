@@ -19,18 +19,17 @@ const steps = [
     { title: 'Deliver mails', description: 'Delivery' },
   ]
   
-  export default function StepperCompoment({setIndex}) {
-    const { activeStep } = useSteps({
-      index: 1,
+  export default function StepperCompoment({setIndex, step}) {
+    let { activeStep, setActiveStep } = useSteps({
+      index: step,
       count: steps.length,
     })
   
 
     useEffect(() => {
+     setActiveStep(step)
      
-        console.log(setIndex())
-     
-    }, [activeStep])
+    }, [activeStep,step])
     
 
     return (
